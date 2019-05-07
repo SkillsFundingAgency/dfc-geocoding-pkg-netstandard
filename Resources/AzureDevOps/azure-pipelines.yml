@@ -1,4 +1,4 @@
-parameters:
+variables:
   SolutionBaseName: 'DFC.GeoCoding.Standard'
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
@@ -11,17 +11,17 @@ steps:
  - task: NuGetToolInstaller@0
    displayName: 'Use NuGet 4.3.0'
  - task: NuGetCommand@2
-   displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
+   displayName: 'NuGet restore ${{ variables.SolutionBaseName }}.sln'
    inputs:
-     restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+     restoreSolution: '${{ variables.SolutionBaseName }}.sln'
  - task: VSBuild@1
-   displayName: 'Build solution ${{ parameters.SolutionBaseName }}.sln'
+   displayName: 'Build solution ${{ variables.SolutionBaseName }}.sln'
    inputs:
-     solution: '${{ parameters.SolutionBaseName }}.sln'
+     solution: '${{ variables.SolutionBaseName }}.sln'
      vsVersion: 15.0
      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
-     platform: '${{ parameters.BuildPlatform }}'
-     configuration: '${{ parameters.BuildConfiguration }}'
+     platform: '${{ variables.BuildPlatform }}'
+     configuration: '${{ variables.BuildConfiguration }}'
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/UnitTests'
    inputs:
@@ -32,11 +32,11 @@ steps:
    displayName: 'VsTest - testAssemblies'
    inputs:
      testSelector: 'testAssemblies'
-     testAssemblyVer2: '**\${{ parameters.SolutionBaseName }}.Tests.dll'
+     testAssemblyVer2: '**\${{ variables.SolutionBaseName }}.Tests.dll'
      searchFolder: '$(build.artifactstagingdirectory)/UnitTests'
      codeCoverageEnabled: true
-     platform: ${{ parameters.BuildPlatform }}
-     configuration: ${{ parameters.BuildConfiguration }}
+     platform: ${{ variables.BuildPlatform }}
+     configuration: ${{ variables.BuildConfiguration }}
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
    inputs:
@@ -44,8 +44,8 @@ steps:
      contents: '**'
      targetFolder: '$(build.artifactstagingdirectory)/Azure'
  - task: PublishBuildArtifacts@1
-   displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
+   displayName: 'Publish Artifact: ${{ variables.SolutionBaseName }}'
    inputs:
      pathtoPublish: $(build.artifactstagingdirectory)
-     artifactName: ${{ parameters.SolutionBaseName }}
+     artifactName: ${{ variables.SolutionBaseName }}
      publishLocation: container
