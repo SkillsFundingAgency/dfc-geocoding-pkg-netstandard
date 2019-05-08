@@ -37,12 +37,6 @@ steps:
      codeCoverageEnabled: true
      platform: ${{ variables.BuildPlatform }}
      configuration: ${{ variables.BuildConfiguration }}
- - task: CopyFiles@2
-   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
-   inputs:
-     sourceFolder: 'Resources'
-     contents: '**'
-     targetFolder: '$(build.artifactstagingdirectory)/Azure'
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ variables.SolutionBaseName }}'
    inputs:
