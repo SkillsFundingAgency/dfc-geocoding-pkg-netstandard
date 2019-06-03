@@ -16,8 +16,19 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
         public AzureMapService()
         {
             _azureMapUrl = Environment.GetEnvironmentVariable("AzureMapURL");
+
+            if (string.IsNullOrEmpty(_azureMapUrl))
+                throw new ArgumentNullException("_azureMapUrl");
+
             _apiVersion = Environment.GetEnvironmentVariable("ApiVersion");
+
+            if (string.IsNullOrEmpty(_apiVersion))
+                throw new ArgumentNullException("_apiVersion");
+
             _subscriptionKey = Environment.GetEnvironmentVariable("SubscriptionKey");
+
+            if (string.IsNullOrEmpty(_subscriptionKey))
+                throw new ArgumentNullException("_subscriptionKey");
         }
 
         public async Task<Position> GetPositionForAddress(string address)
@@ -51,5 +62,7 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
 
             }
         }
+
+
     }
 }
