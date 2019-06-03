@@ -1,0 +1,45 @@
+variables:
+  SolutionBaseName: 'DFC.GeoCoding.Standard'
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+
+steps:
+ - task: gittools.gitversion.gitversion-task.GitVersion@4
+   displayName: GitVersion
+   inputs:
+     preferBundledVersion: false
+ - task: NuGetToolInstaller@0
+   displayName: 'Use NuGet 4.3.0'
+ - task: NuGetCommand@2
+   displayName: 'NuGet restore ${{ variables.SolutionBaseName }}.sln'
+   inputs:
+     restoreSolution: '${{ variables.SolutionBaseName }}.sln'
+ - task: VSBuild@1
+   displayName: 'Build solution ${{ variables.SolutionBaseName }}.sln'
+   inputs:
+     solution: '${{ variables.SolutionBaseName }}.sln'
+     vsVersion: 15.0
+     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
+     platform: '${{ variables.BuildPlatform }}'
+     configuration: '${{ variables.BuildConfiguration }}'
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/UnitTests'
+   inputs:
+     sourceFolder: '$(System.DefaultWorkingDirectory)'
+     contents: '**\bin\Release\**'
+     targetFolder: '$(build.artifactstagingdirectory)/UnitTests'
+ - task: VSTest@2
+   displayName: 'VsTest - testAssemblies'
+   inputs:
+     testSelector: 'testAssemblies'
+     testAssemblyVer2: '**\${{ variables.SolutionBaseName }}.Tests.dll'
+     searchFolder: '$(build.artifactstagingdirectory)/UnitTests'
+     codeCoverageEnabled: true
+     platform: ${{ variables.BuildPlatform }}
+     configuration: ${{ variables.BuildConfiguration }}
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: ${{ variables.SolutionBaseName }}'
+   inputs:
+     pathtoPublish: $(build.artifactstagingdirectory)
+     artifactName: ${{ variables.SolutionBaseName }}
+     publishLocation: container
