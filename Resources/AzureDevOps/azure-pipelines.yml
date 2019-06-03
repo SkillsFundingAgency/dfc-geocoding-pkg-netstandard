@@ -43,3 +43,17 @@ steps:
      pathtoPublish: $(build.artifactstagingdirectory)
      artifactName: ${{ variables.SolutionBaseName }}
      publishLocation: container
+     steps:
+ - task: NuGetCommand@2
+   displayName: 'NuGet pack'
+   inputs:
+     command: pack
+     packagesToPack: '**/*.nuspec'
+     packDestination: '$(build.artifactstagingdirectory)\DeploymentPackages\'
+     versioningScheme: byEnvVar
+     versionEnvVar: GitVersion.MajorMinorPatch
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: $(SolutionBaseName)'
+   inputs:
+     PathtoPublish: '$(build.artifactstagingdirectory)\DeploymentPackages\'
+     ArtifactName: '$(SolutionBaseName)'
