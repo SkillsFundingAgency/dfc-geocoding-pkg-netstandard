@@ -37,9 +37,17 @@ steps:
      codeCoverageEnabled: true
      platform: ${{ variables.BuildPlatform }}
      configuration: ${{ variables.BuildConfiguration }}
+ - task: NuGetCommand@2
+   displayName: 'NuGet pack'
+   inputs:
+     command: pack
+     packagesToPack: '**/*.nuspec'
+     packDestination: '$(build.artifactstagingdirectory)\DeploymentPackages\'
+     versioningScheme: byEnvVar
+     versionEnvVar: GitVersion.MajorMinorPatch
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ variables.SolutionBaseName }}'
    inputs:
-     pathtoPublish: $(build.artifactstagingdirectory)
+     pathtoPublish: $(build.artifactstagingdirectory)\DeploymentPackages\
      artifactName: ${{ variables.SolutionBaseName }}
      publishLocation: container
