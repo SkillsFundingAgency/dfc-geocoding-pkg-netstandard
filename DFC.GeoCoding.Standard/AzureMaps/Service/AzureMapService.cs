@@ -20,12 +20,12 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
             if (string.IsNullOrEmpty(_azureMapUrl))
                 throw new ArgumentNullException("_azureMapUrl");
 
-            _apiVersion = Environment.GetEnvironmentVariable("ApiVersion");
+            _apiVersion = Environment.GetEnvironmentVariable("AzureMapApiVersion");
 
             if (string.IsNullOrEmpty(_apiVersion))
                 throw new ArgumentNullException("_apiVersion");
 
-            _subscriptionKey = Environment.GetEnvironmentVariable("SubscriptionKey");
+            _subscriptionKey = Environment.GetEnvironmentVariable("AzureMapSubscriptionKey");
 
             if (string.IsNullOrEmpty(_subscriptionKey))
                 throw new ArgumentNullException("_subscriptionKey");
