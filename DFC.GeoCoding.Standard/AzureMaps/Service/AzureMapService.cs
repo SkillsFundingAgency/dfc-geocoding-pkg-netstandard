@@ -12,6 +12,7 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
         private readonly string _apiVersion;
         private readonly string _azureMapUrl;
         private readonly string _subscriptionKey;
+        private readonly string _countrySet;
 
         public AzureMapService()
         {
@@ -29,12 +30,14 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
 
             if (string.IsNullOrEmpty(_subscriptionKey))
                 throw new ArgumentNullException("_subscriptionKey");
+
+            _countrySet = Environment.GetEnvironmentVariable("AzureCountrySet");
         }
 
         public async Task<Position> GetPositionForAddress(string address)
         {
-            var requestUri = string.Format("{0}/address/json?api-version={1}&subscription-key={2}&query={3}",
-                _azureMapUrl, _apiVersion, _subscriptionKey, address);
+            var requestUri = string.Format("{0}/address/json?api-version={1}&subscription-key={2}&query={3}&countrySet={4}",
+                _azureMapUrl, _apiVersion, _subscriptionKey, address, _countrySet);
 
             using (var client = new HttpClient())
             {
