@@ -14,7 +14,6 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
         private string _azureMapUrl;
         private string _subscriptionKey;
         private string _countrySet;
-        private readonly ILogger _logger;
         private IHttpClientFactory _httpClientFactory;
         
         public AzureMapService()
@@ -22,10 +21,9 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
             VerifyRequiredArguments();
         }
 
-        public AzureMapService(IHttpClientFactory clientFactory, ILogger logger)
+        public AzureMapService(IHttpClientFactory clientFactory)
         {
             _httpClientFactory = clientFactory;
-            _logger = logger;
             
             VerifyRequiredArguments();
         }
@@ -54,8 +52,7 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
         {
             if (_httpClientFactory == null)
             {
-                _logger.LogInformation("Please use the correct Constructor: AzureMapService(IHttpClientFactory clientFactory, ILogger logger)");
-                return null;
+                throw new  Exception ("Please use the correct Constructor: AzureMapService(IHttpClientFactory clientFactory)");
             }
 
             var client = _httpClientFactory.CreateClient();
