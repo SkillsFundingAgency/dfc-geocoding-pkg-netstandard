@@ -15,6 +15,7 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
         private string _subscriptionKey;
         private string _countrySet;
         private IHttpClientFactory _httpClientFactory;
+        private float confidenceScoreBenchmark = (float)0.9;
         
         public AzureMapService()
         {
@@ -90,7 +91,7 @@ namespace DFC.GeoCoding.Standard.AzureMaps.Service
 
             var searchAddressModel = JsonConvert.DeserializeObject<SearchAddressModel>(content);
 
-            if (searchAddressModel?.Results == null || !searchAddressModel.Results.Any() || searchAddressModel.Results.FirstOrDefault()?.Position == null)
+            if (searchAddressModel?.Results == null || !searchAddressModel.Results.Any() || searchAddressModel.Results.FirstOrDefault()?.Position == null || searchAddressModel.Results.FirstOrDefault()?.Score < confidenceScoreBenchmark)
             {
                 return null;
             }
