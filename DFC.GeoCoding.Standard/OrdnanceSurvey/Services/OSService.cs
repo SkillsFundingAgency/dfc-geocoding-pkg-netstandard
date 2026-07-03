@@ -46,8 +46,12 @@ namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Services
 
                     if (dpa == null)
                     {
+                        _logger.LogInformation("Ordnance Survey returned no results for postcode: {Postcode}, returning empty position", postcode);
+
                         return new Position();
                     }
+
+                    _logger.LogInformation("Returning position for postcode: {Postcode} with longitude: {Longitude} and latitude: {Latitude}", postcode, dpa.Longitude, dpa.Latitude);
 
                     return new Position()
                     {
