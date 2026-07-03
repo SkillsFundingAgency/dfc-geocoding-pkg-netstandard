@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Models
 {
     public class Result
     {
-        [JsonProperty("DPA", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("DPA")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Dpa Dpa { get; set; }
     }
 }

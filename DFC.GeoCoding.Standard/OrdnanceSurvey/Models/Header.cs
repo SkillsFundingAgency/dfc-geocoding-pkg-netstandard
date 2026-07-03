@@ -1,43 +1,35 @@
 ﻿using DFC.GeoCoding.Standard.OrdnanceSurvey.Serialization;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json.Serialization;
 
 namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Models
 {
     public class Header
     {
-        [JsonProperty("uri")]
+        [JsonPropertyName("uri")]
         public Uri Uri { get; set; }
 
-        [JsonProperty("query")]
+        [JsonPropertyName("query")]
         public string Query { get; set; }
 
-        [JsonProperty("offset")]
+        [JsonPropertyName("offset")]
+        [JsonConverter(typeof(ParseStringConverter))]
         public long Offset { get; set; }
 
-        [JsonProperty("totalresults")]
+        [JsonPropertyName("totalresults")]
+        [JsonConverter(typeof(ParseStringConverter))]
         public long Totalresults { get; set; }
 
-        [JsonProperty("format")]
+        [JsonPropertyName("format")]
         public string Format { get; set; }
 
-        [JsonProperty("dataset")]
+        [JsonPropertyName("dataset")]
         public string Dataset { get; set; }
 
-        [JsonProperty("lr")]
+        [JsonPropertyName("lr")]
         public string Lr { get; set; }
 
-        [JsonProperty("maxresults")]
+        [JsonPropertyName("maxresults")]
         public long Maxresults { get; set; }
-
-        [JsonProperty("epoch")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long Epoch { get; set; }
-
-        [JsonProperty("lastupdate")]
-        public DateTimeOffset Lastupdate { get; set; }
-
-        [JsonProperty("output_srs")]
-        public string OutputSrs { get; set; }
     }
 }

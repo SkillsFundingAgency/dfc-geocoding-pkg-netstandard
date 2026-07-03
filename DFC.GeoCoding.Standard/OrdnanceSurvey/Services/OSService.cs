@@ -1,12 +1,12 @@
 ﻿using DFC.GeoCoding.Standard.OrdnanceSurvey.Models;
-using DFC.GeoCoding.Standard.OrdnanceSurvey.Serialization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Services
@@ -16,6 +16,11 @@ namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Services
         private readonly ILogger<OSService> _logger;
         private readonly HttpClient _httpClient;
         private readonly OSServiceOptions _options;
+        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNameCaseInsensitive = true
+        };
 
         public OSService(
             HttpClient httpClient,
@@ -74,18 +79,17 @@ namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Services
                 _httpClient.DefaultRequestHeaders.Add("key", _options.ApiKey);
             }
 
-            using (var response = await _httpClient.GetAsync(url))
+            using var response = await _httpClient.GetAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.BadRequest)
             {
-                if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    return null;
-                }
-
-                response.EnsureSuccessStatusCode();
-
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Address>(content, JsonSettings.Default);
+                return null;
             }
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Address>(content, JsonOptions);
         }
     }
 }

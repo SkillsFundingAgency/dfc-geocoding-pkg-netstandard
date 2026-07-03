@@ -1,13 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Models
 {
     public class Address
     {
-        [JsonProperty("header")]
+        [JsonPropertyName("header")]
         public Header Header { get; set; }
 
-        [JsonProperty("results")]
+        [JsonPropertyName("results")]
         public Result[] Results { get; set; }
     }
 }
