@@ -44,16 +44,16 @@ namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Models
             public long Rpc { get; set; }
 
             [JsonProperty("X_COORDINATE")]
-            public long XCoordinate { get; set; }
+            public double XCoordinate { get; set; }
 
             [JsonProperty("Y_COORDINATE")]
-            public long YCoordinate { get; set; }
+            public double YCoordinate { get; set; }
 
             [JsonProperty("LNG")]
-            public long Longitude { get; set; }
+            public double Longitude { get; set; }
 
             [JsonProperty("LAT")]
-            public long Latitude { get; set; }
+            public double Latitude { get; set; }
 
             [JsonProperty("STATUS")]
             public string Status { get; set; }
@@ -112,7 +112,7 @@ namespace DFC.GeoCoding.Standard.OrdnanceSurvey.Models
             public string Language { get; set; }
 
             [JsonProperty("MATCH")]
-            public long Match { get; set; }
+            public double Match { get; set; }
 
             [JsonProperty("MATCH_DESCRIPTION")]
             public string MatchDescription { get; set; }
