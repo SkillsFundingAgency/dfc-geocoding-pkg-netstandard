@@ -1,0 +1,75 @@
+parameters:
+- name: ProjectName
+  type: string
+- name: PathToProjectFile
+  type: string
+- name: PublishNuget
+  type: boolean
+  default: false
+- name: PackageFeedName
+  type: string
+
+steps:
+- task: NuGetAuthenticate@0
+  displayName: 'NuGet Authenticate'
+ 
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: 'restore'
+    projects: '**/${{ parameters.PathToProjectFile }}'
+    feedsToUse: 'select'
+    vstsFeed: '${{ parameters.PackageFeedName }}'
+    includeNuGetOrg: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Dotnet Build'
+  inputs:
+    command: 'build'
+    arguments: '--configuration Release  --no-restore'
+    projects: '**/${{ parameters.PathToProjectFile }}'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests'
+  inputs:
+    command: 'test'
+    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    projects: |
+      **/*.Test/*.Test.csproj
+      **/*.Tests/*.Tests.csproj
+      **/*.UnitTests/*.UnitTests.csproj
+    publishTestResults: true
+
+- task: PowerShell@2
+  displayName: 'Merge code coverage report'
+  inputs:
+    targetType: 'inline'
+    ignoreLASTEXITCODE: true
+    script: |
+      dotnet tool install -g dotnet-reportgenerator-globaltool
+      reportgenerator "-reports:$(Build.SourcesDirectory)/**/*.Test/coverage.cobertura.xml;$(Build.SourcesDirectory)/**/*.Tests/coverage.cobertura.xml;$(Build.SourcesDirectory)/**/*.UnitTests/coverage.cobertura.xml" "-targetdir:$(Build.SourcesDirectory)/CoverageResults" "-reporttypes:Cobertura;HtmlInline"
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage report'
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Build.SourcesDirectory)/CoverageResults/Cobertura.xml'
+
+- task: DotNetCoreCLI@2
+  displayName: "Dotnet Pack"
+  condition: and(succeeded(), eq('${{ parameters.PublishNuget }}', true))
+  inputs:
+    command: 'pack'
+    arguments: '--configuration Release'
+    packagesToPack: '**/${{ parameters.PathToProjectFile }}'
+    versioningScheme: 'off'
+  
+- task: NuGetCommand@2
+  displayName: 'Nuget Push'
+  condition: and(succeeded(), eq('${{ parameters.PublishNuget }}', true))
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/${{ parameters.ProjectName }}*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '${{ parameters.PackageFeedName }}'
+    versioningScheme: 'off' 

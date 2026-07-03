@@ -9,23 +9,18 @@ variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
 
-resources:
-  repositories:
-  - repository: Infra
-    name: dfe-ncs-infrastructure
-    type: git
-
 steps:
   - checkout: self
     clean: true
     fetchDepth: 0
-  - template:  AzureDevOps\StepTemplates\SetDotNetVersion.yml@Infra
 
-  - template:  AzureDevOps\StepTemplates\SetDotNetVersion.yml@Infra
+  - template:  StepTemplates\SetBuildNumber.yml
+
+  - template:  StepTemplates\SetDotNetVersion.yml
     parameters:
       DotNetVersion: 8.x
 
-  - template:  AzureDevOps\StepTemplates\BuildTestPublishNuget.yml@Infra
+  - template:  StepTemplates\BuildTestPublishNuget.yml
     parameters:
       ProjectName: ${{ variables.SolutionBaseName }}
       PathToProjectFile: ${{ variables.SolutionBaseName }}\${{ variables.SolutionBaseName }}.csproj

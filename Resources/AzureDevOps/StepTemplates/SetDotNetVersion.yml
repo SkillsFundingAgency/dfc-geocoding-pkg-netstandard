@@ -1,0 +1,20 @@
+parameters:
+- name: DotNetVersion
+  type: string
+  default: 6.x
+- name: NuGetVersion
+  type: string
+  default: 6.x
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk ${{ parameters.DotNetVersion }}'
+  inputs:
+    version: ${{ parameters.DotNetVersion }}
+    IncludePreviewVersions: false
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet'
+  inputs:
+    versionSpec: ${{ parameters.NuGetVersion }}
