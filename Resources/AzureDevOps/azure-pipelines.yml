@@ -20,7 +20,7 @@ steps:
     parameters:
       DotNetVersion: 8.x
 
-  - template:  StepTemplates\BuildTestPublishNuget.yml
+  - template:  StepTemplates\BuildPublishNuget.yml
     parameters:
       ProjectName: ${{ variables.SolutionBaseName }}
       PathToProjectFile: ${{ variables.SolutionBaseName }}\${{ variables.SolutionBaseName }}.csproj
