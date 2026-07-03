@@ -8,8 +8,10 @@ steps:
    displayName: GitVersion
    inputs:
      preferBundledVersion: false
+
  - task: NuGetToolInstaller@0
    displayName: 'Use NuGet 4.3.0'
+
  - task: NuGetCommand@2
    displayName: 'NuGet restore ${{ variables.SolutionBaseName }}.sln'
    inputs:
@@ -18,7 +20,7 @@ steps:
    displayName: 'Build solution ${{ variables.SolutionBaseName }}.sln'
    inputs:
      solution: '${{ variables.SolutionBaseName }}.sln'
-     vsVersion: 15.0
+     vsVersion: "latest"
      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
      platform: '${{ variables.BuildPlatform }}'
      configuration: '${{ variables.BuildConfiguration }}'
