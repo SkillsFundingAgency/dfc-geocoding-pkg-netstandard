@@ -4,7 +4,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
 		<PackageId>DFC.GeoCoding.Standard</PackageId>
-		<Version>2.0.0</Version>
+		<Version>2.1.0</Version>
 		<IsPackable>true</IsPackable>
 		<Authors>Education and Skills Funding Agency Team</Authors>
 		<PackageDescription>Geocoding client for retrieving longitude and latitude information based on postcodes.</PackageDescription>
