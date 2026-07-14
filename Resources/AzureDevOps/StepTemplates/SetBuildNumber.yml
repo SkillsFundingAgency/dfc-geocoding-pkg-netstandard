@@ -1,0 +1,18 @@
+parameters:
+- name: VersionOfGitVersion
+  type: string
+  default: 5.11.x
+- name: PathToGitVersionConfigFile
+  type: string
+  default: Resources/AzureDevOps/GitVersion.yml
+
+steps:
+- task: gitversion-setup@3.2.1
+  displayName: Install GitVersion
+  inputs:
+    versionSpec: ${{ parameters.VersionOfGitVersion }}
+
+- task: gitversion-execute@3.2.1
+  displayName: Run GitVersion
+  inputs:
+    configFilePath: ${{ parameters.PathToGitVersionConfigFile }}
